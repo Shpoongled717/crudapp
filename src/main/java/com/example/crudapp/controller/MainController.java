@@ -15,7 +15,7 @@ public class MainController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/index")
+    @GetMapping("/") //TODO
     public String showUserList(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "index";
