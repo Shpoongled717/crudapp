@@ -29,14 +29,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(email);
+
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
+
         return user;
     }
 
     public User findUserById(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
+
         return optionalUser.orElse(new User());
     }
 
@@ -49,16 +52,20 @@ public class UserServiceImpl implements UserService {
             userRepository.deleteById(userId);
             return true;
         }
+
         return false;
     }
 
     public boolean saveUser(User user) {
         User userFromDb = userRepository.findUserByEmail(user.getEmail());
+
         if (userFromDb != null) {
             return false;
         }
+
         user.setUserRoles(Collections.singleton(new Role(2L, "ROLE_USER")));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+
         return true;
     }
 }
