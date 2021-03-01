@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Repository
-public class RoleDaoImpl implements  RoleDao{
+public class RoleDaoImpl implements RoleDao {
     private final SessionFactory sessionFactory;
 
     public RoleDaoImpl(SessionFactory sessionFactory) {
