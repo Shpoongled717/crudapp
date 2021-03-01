@@ -2,20 +2,23 @@ package com.example.crudapp.service;
 
 
 import com.example.crudapp.entity.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public interface UserService extends UserDetailsService {
+public interface UserService {
 
-    boolean saveUser(User user);
+    User add(User user);
 
-    List<User> allUser();
+    List<User> listUsers();
 
-    User findUserById(Long userId);
+    Boolean delete(Long id);
 
-    boolean deleteUser(Long userId);
+    User update(User user);
+
+    User getUserByName(String username);
+
+    User getUserById(Long id);
 
 }

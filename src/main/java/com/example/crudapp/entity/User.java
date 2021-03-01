@@ -1,37 +1,59 @@
 package com.example.crudapp.entity;
 
-import org.hibernate.annotations.BatchSize;
-import org.springframework.boot.convert.DataSizeUnit;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
 
     @Id
-    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String email;
+
+    @Column
     private String password;
-    private String firstName;
 
-    @Transient
-    private String passwordConfirm;
+    @Column
+    private String username;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> userRoles;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roleSet;
 
     public User() {
+    }
+
+    public User(String email, String password, String username) {
+        this.email = email;
+        this.password = password;
+        this.username = username;
+    }
+
+    public User(String email, String password, String username, Set<Role> roleSet) {
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.roleSet = roleSet;
+    }
+
+    public User(Long id, String email, String password, String username, Set<Role> roleSet) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.roleSet = roleSet;
+    }
+
+    public Set<Role> getRoleSet() {
+        return roleSet;
+    }
+
+    public void setRoleSet(Set<Role> roleSet) {
+        this.roleSet = roleSet;
     }
 
     public Long getId() {
@@ -58,57 +80,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public Set<Role> getUserRoles() {
-        return userRoles;
-    }
-
-    public void setUserRoles(Set<Role> roleSet) {
-        this.userRoles = roleSet;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getUserRoles();
-    }
-
-    @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    public void setPasswordConfirm(String passwordConfirm) {
-        this.passwordConfirm = passwordConfirm;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

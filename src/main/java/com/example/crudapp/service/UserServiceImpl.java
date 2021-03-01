@@ -1,71 +1,52 @@
 package com.example.crudapp.service;
 
-import com.example.crudapp.entity.Role;
 import com.example.crudapp.entity.User;
-import com.example.crudapp.repository.RoleRepository;
-import com.example.crudapp.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.example.crudapp.repository.UserDao;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    UserRepository userRepository;
+    final UserDao userDao;
 
-    @Autowired
-    RoleRepository roleRepository;
+    public UserServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Transactional
+    @Override
+    public User add(User user) {
+        return userDao.add(user);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<User> listUsers() {
+        return userDao.listUsers();
+    }
+
+    @Transactional
+    @Override
+    public Boolean delete(Long id) {
+        return userDao.delete(id);
+    }
+
+    @Transactional
+    @Override
+    public User update(User user) {
+        return userDao.update(user);
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findUserByEmail(email);
-
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        return user;
+    public User getUserByName(String username) {
+        return userDao.findByUsername(username);
     }
 
-    public User findUserById(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-
-        return optionalUser.orElse(new User());
-    }
-
-    public List<User> allUser() {
-        return userRepository.findAll();
-    }
-
-    public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean saveUser(User user) {
-        User userFromDb = userRepository.findUserByEmail(user.getEmail());
-
-        if (userFromDb != null) {
-            return false;
-        }
-
-        user.setUserRoles(Collections.singleton(new Role(2L, "ROLE_USER")));
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-
-        return true;
+    @Override
+    public User getUserById(Long id) {
+        return userDao.findById(id);
     }
 }
