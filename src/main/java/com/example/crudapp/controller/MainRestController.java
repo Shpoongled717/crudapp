@@ -27,9 +27,9 @@ public class MainRestController {
         return ResponseEntity.ok().body(userService.getUserById(id));
     }
 
-    @GetMapping(value = "/users/get/{login}")
-    public ResponseEntity<User> getUserByLogin(@PathVariable String login) {
-        return ResponseEntity.ok().body(userService.getUserByName(login));
+    @GetMapping(value = "/users/get/{email}")
+    public ResponseEntity<User> getUserByLogin(@PathVariable String email) {
+        return ResponseEntity.ok().body(userService.getUserByName(email));
     }
 
     @GetMapping(value = "/roles/get/{id}")
